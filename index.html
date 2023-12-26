@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> 写作能力锻炼</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            text-align: center;
+            font-family: '宋体', 'Songti', 'SimSun', sans-serif;
+            color: #333;
+            margin: 50px;
+        }
+
+        #affirmation-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Hide overflow for slider effect */
+        }
+
+        h1 {
+            color: #3498db;
+            font-size: 30px;
+            margin: 0;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        #affirmation-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        #affirmation-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        #question-container {
+            margin-bottom: 20px;
+        }
+
+        #question-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #user-answer {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #confirm-button, #answer-button,#reference-button,#feedback-button {
+            font-size: 16px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+			margin:0 auto;
+        }
+
+        #navigation button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #3498db;
+            transition: color 0.3s ease;
+        }
+
+        #navigation button:hover {
+            color: #2980b9;
+        }
+
+        /* Your existing feedback section remains unchanged */
+		#feedback{
+			display:none;
+		}
+
+        /* Additional style for the textarea */
+        #feedback-textarea {
+            display: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="affirmation-container">
+        <h1><strong>描述能力练习！</strong></h1>
+        <img id="affirmation-image" src="affirmation0.jpg" alt="Affirmation Image">
+        <p id="affirmation-text">Loading...</p>
+
+        <div id="question-container">
+            <p id="question-text">开始吧。</p>
+            <button id="answer-button" onclick="toggleAnswer()" style="display:none;">修改答案</button>
+			<p id="referenceAnswer" style="font-size:12px;margin-top:10px;"></p>
+			
+            <textarea id="user-answer" placeholder="在这里输入您的回答" style="display: none;"></textarea>
+            <button id="confirm-button" onclick="confirmAnswer()" style="display: none;">确认</button>
+			<button id="reference-button" onclick="checkAnswer()" style="display:none;margin-top:10px;">查看参考方法</button>
+        </div>
+		<div id="final-container" style="display:none;">
+			<p> 好了，你已经完成了，当然如果喜欢这样的方式来和孩子互动学习，可以点击以下按钮去到feedback form 告诉我，我就会出更多这样的系列，也会加更多种场景。喜欢这个app 的话，可以把app 存在手机里，下面有教程！</p>
+			<button id="feedback-button" onclick="displayAddHome()" style="display:none;margin-top:10px;">填写Feedback,或者把APP加到手机</button>
+		</div>
+        <div id="navigation">
+            <button class="arrow-left" style="font-size:15px;" onclick="prevAffirmation()">&larr;上一页</button>
+            <button class="arrow-right" style="font-size:15px;" onclick="nextAffirmation()">下一页&rarr;</button>
+        </div>
+    </div>
+     <div class="section " id="feedback" style="margin-top:80px;" >
+            <div class="row">
+
+                <div class="col-12 col-6" style="margin-bottom:30px;">
+                    <h1>将 Web App 添加到主屏幕</h1>
+                    <p>如果你喜欢这个app, 想要时常用的话，可以在浏览器中打开，然后选择“添加到主屏幕”以创建应用的快捷方式。</p>
+                    <iframe src="https://www.youtube.com/embed/dTFaSVUlmA4?si=haZAEGNuYLF5ZXxc" frameborder="0" style="width:100%; min-height:400px;"allowfullscreen></iframe>
+                </div>
+                <div class="col-12 col-6" >
+                    <h1>给我们一点意见</h1>
+                    <form action="https://script.google.com/macros/s/AKfycbxHQefQKgU5bVNMaDdbp_oP8mge0U2UAcvx2Y9M0c8kOJxpuCfJUbimgESUCeKJrZ2blg/exec" method="POST">
+                        <label for="feedback">提供反馈：</label>
+                        <textarea id="moreDetails" name="details" class="form-control" id="feedback" rows="3"></textarea>
+                        <button type="submit" class="btn btn-primary mt-2">提交反馈</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <!-- Your existing feedback section remains unchanged -->
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+		var firsttime = true;
+		function remove(){
+			if (firsttime ===true){
+				affirmations.shift();
+				currentAffirmationIndex = currentAffirmationIndex - 1;
+				document.getElementById("answer-button").style.display = "block";
+				document.getElementById("reference-button").style.display = "block";
+				firsttime = false;
+				document.getElementById("affirmation-text").style.textAlign = "left";
+				document.getElementById("question-text").style.border = "1px solid black";
+				document.getElementById("question-text").style.borderRadius="10px";
+
+			}	
+		}	
+		
+        var affirmations = [
+            { text: "这个app提供了10个场景，可以和孩子一起讨论。根据提示，想出如何能够根据题目，把事情描述出来。从而锻炼孩子的描述能力 。\n\n 点击 '下一页'开始", image: "0.png", defaultAnswer: "" },
+		  {
+			"text": "题目：描述一个令你开心的日子， 提示：使用生动的形容词和详细的描写，让读者感受到你的快乐。",
+			"image": "1.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "那是一个明媚的周末，阳光洒在大地上，仿佛把整个世界都点亮了。我和家人一起去郊区野餐，呼吸着清新的空气，感受着微风轻抚脸庞。我们带着美味的食物，找了一个草地坐下，笑声和欢乐在空气中荡漾。我看着蓝天白云，觉得心情格外愉快，这一天成为我快乐的美好回忆。"
+		  },
+		  {
+			"text": "题目：描述一个让你激动的瞬间， 提示：用生动的语言描绘你的情感和周围的环境，让读者感受到你的激动。",
+			"image": "2.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当我听到自己的名字被宣布为比赛的冠军时，整个世界仿佛停滞了一刹那。心脏怦然跳动，激动的泪水涌上了眼眶。我站在领奖台上，听着掌声如潮水般涌来，感受到胜利的甜蜜。这一刻让我兴奋不已，成为我永远难以忘怀的瞬间。"
+		  },
+		  {
+			"text": "题目：描述一个令你惊奇的场景， 提示：通过详细的描写展现你对于这个场景的观察和感受，让读者能够分享你的惊奇。",
+			"image": "3.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当我走进那座神秘的森林时，眼前呈现的景象让我不禁停下了脚步。树木高耸入云，阳光透过树叶洒在小径上，犹如仙境一般。微风拂过，树叶发出沙沙的声音，仿佛大自然在向我述说着它的神秘故事。这个令我惊奇的场景如诗如画，成为我心中无法磨灭的奇迹。"
+		  },
+		  {
+			"text": "题目：描述一个让你感到安慰的时刻， 提示：通过细腻的描写表达你在这个时刻的感情和周围的温馨，让读者感受到你的宁静。",
+			"image": "4.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "那是一个下雨的夜晚，我躺在窗前听着雨点敲击窗户的声音。窗外的世界被雨水洗净，空气中弥漫着清新的湿润味道。我裹紧被子，感受到温暖的安慰。烛光在屋内摇曳，营造出宁静的氛围。在这个时刻，我沉浸在安逸的感觉中，心灵得到了治愈。"
+		  },
+		  {
+			"text": "题目：描述一个让你感到紧张的瞬间， 提示：用生动的描写传达你在这个时刻的紧张和心跳，让读者能够感同身受。",
+			"image": "5.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当我站在舞台上，灯光聚集在我身上，观众的目光如炬，我感到一阵紧张。心脏急促地跳动，手心冒出细细的汗珠。舞台背后的紧张氛围让我几乎喘不过气来，但同时也激发了我全身的活力。这个紧张的瞬间成为我勇敢挑战的记忆，让我学会了面对压力。"
+		  },
+		  {
+			"text": "题目：描述一个让你感到困惑的时刻， 提示：通过具体的描写展示你在面对困惑时的思考和内心的纠结，让读者深入了解你的心境。",
+			"image": "6.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "那是一个错综复杂的问题摆在我面前，我陷入了深深的困惑中。脑海中思绪纷飞，我努力寻找答案的线索。整个世界仿佛进入了一片迷雾，我左思右想，一会儿想到这里，一会儿又回到原点。这个困惑的时刻让我深感思考的重要性，也使我更加勇敢面对困难。"
+		  },
+		  {
+			"text": "题目：描述一个让你感到惋惜的瞬间， 提示：通过感性的描写表达你在这个瞬间的失落和内心的感叹，让读者共情你的心情。",
+			"image": "7.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当夕阳西下，我看着天边最后一抹余晖逐渐消失，心中涌上一丝惋惜。时光飞逝，这一天也即将结束，而我似乎还没尽情享受每一刻美好。在这个惋惜的瞬间，我意识到时间的宝贵，希望能更好地珍惜每一个瞬间。"
+		  },
+		  {
+			"text": "题目：描述一个令你感到骄傲的时刻， 提示：用生动的描写传达你在这个时刻的自豪和自信，让读者能够分享你的骄傲。",
+			"image": "8.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当我拿到那张优异的成绩单时，心中涌上一股自豪和成就感。我努力学习，付出了辛勤的努力，而这份耕耘终于得到了丰硕的果实。那一刻，我感到自己充满力量，对未来充满信心。这个令我感到骄傲的时刻成为我不断进取的动力。"
+		  },
+		  {
+			"text": "题目：描述一个让你感到感激的瞬间， 提示：通过真挚的描写表达你在这个瞬间的感激和对周围的感恩之情，让读者感受到你的温暖。",
+			"image": "9.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当我在困境中得到朋友的帮助时，心中涌上一阵感激之情。朋友的支持和鼓励让我感到温暖和坚定。这个感激的瞬间让我明白友谊的珍贵，也让我更加明白在困难时可以依靠彼此。"
+		  },
+		  {
+			"text": "题目：描述一个令你感到好奇的时刻， 提示：通过详细的描写展示你在好奇心驱使下的探索和发现，让读者分享你的好奇心情。",
+			"image": "10.png",
+			"defaultAnswer": "未回答",
+			"referenceAnswer": "当我在图书馆发现一本神秘的古旧书籍时，好奇心驱使着我打开它。书中记载着未知的历史和奇幻的故事，我被吸引得无法自拔。翻阅这本书的过程中，我仿佛进入了一个神秘的时光隧道，发现了许多有趣的事物。这个让我感到好奇的时刻成为我探索世界的起点。"
+		  },
+            { text: "", image: "0.png", defaultAnswer: "" },
+
+ // Add more affirmations as needed
+        ];
+
+        var currentAffirmationIndex = 0;
+
+		function showAffirmation(index) {
+			var affirmation = affirmations[index];
+			document.getElementById('affirmation-text').innerHTML = affirmation.text.replace(/\n/g, '<br>');
+			document.getElementById('affirmation-image').src = affirmation.image;
+
+			// Replace newline characters with HTML line breaks
+			document.getElementById('question-text').innerHTML = affirmation.defaultAnswer.replace(/\n/g, '<br>');
+		}
+
+		function toggleAnswer() {
+			var textarea = document.getElementById('user-answer');
+			var confirmButton = document.getElementById('confirm-button');
+			var answerButton = document.getElementById('answer-button');
+
+			textarea.style.display = 'block';
+			textarea.placeholder = affirmations[currentAffirmationIndex].defaultAnswer;  // Set placeholder
+			confirmButton.style.display = 'block';
+			answerButton.style.display = 'none';
+		}
+
+		function confirmAnswer() {
+			var textarea = document.getElementById('user-answer');
+			var confirmButton = document.getElementById('confirm-button');
+			var answerButton = document.getElementById('answer-button');
+			var questionText = document.getElementById('question-text');
+			var affirmationText = document.getElementById('affirmation-text');
+
+			textarea.style.display = 'none';
+			confirmButton.style.display = 'none';
+			answerButton.style.display = 'block';
+
+			// Replace newline characters with HTML line breaks
+			var userAnswer = textarea.value.replace(/\n/g, '<br>');
+			
+			// Update the JSON data with the user's input
+			affirmations[currentAffirmationIndex].defaultAnswer = userAnswer;
+			
+			// Display the user's input with line breaks in the HTML
+			questionText.innerHTML = userAnswer;
+			affirmationText.innerText = affirmations[currentAffirmationIndex].text;
+			textarea.value="";
+
+		}
+		function checkAnswer(){
+			var answer = document.getElementById("referenceAnswer");
+			var checkButton = document.getElementById("reference-button");
+			checkButton.style.display = "none";
+			answer.style.display="block";
+			answer.innerHTML = affirmations[currentAffirmationIndex].referenceAnswer.replace(/\n/g, '<br>');
+			
+		}
+		
+		function uncheckAnswer(){
+			var answer = document.getElementById("referenceAnswer");
+			var checkButton = document.getElementById("reference-button");
+			checkButton.style.display = "block";
+			answer.style.display="none";
+		}
+		
+        function nextAffirmation() {
+            currentAffirmationIndex = (currentAffirmationIndex + 1) % affirmations.length;
+            showAffirmation(currentAffirmationIndex);
+			remove();
+			checklast();
+			uncheckAnswer();
+        }
+
+        function prevAffirmation() {
+            currentAffirmationIndex = (currentAffirmationIndex - 1 + affirmations.length) % affirmations.length;
+            showAffirmation(currentAffirmationIndex);
+			remove();
+			checklast();
+			uncheckAnswer();
+        }
+		
+
+		function checklast(){
+			if (currentAffirmationIndex === affirmations.length-1){
+				document.getElementById('question-container').style.display = "none";
+				document.getElementById('final-container').style.display="block";
+				document.getElementById('feedback-button').style.display="block";
+
+				
+			}else{
+				document.getElementById('question-container').style.display = "block";
+				document.getElementById('final-container').style.display="none";			
+			}
+		}
+		
+		function displayAddHome(){
+			document.getElementById('feedback').style.display="block";
+			// Fetch the URL
+			fetch('https://script.google.com/macros/s/AKfycbxMdAmgo9_wsiUIU23pRZpeYuHqd50RdKukED3w1Q_fRmyuGrqQBEcavc-WxI-7PQQg8A/exec?cta=10')
+				.then(response => response.json()
+				
+				)
+				.then(data => {
+					// Handle the data as needed
+					console.log(data);
+				})
+				.catch(error => {
+					// Handle errors
+					console.error('Error fetching data:', error);
+				});
+		}
+        // Initial display
+        showAffirmation(currentAffirmationIndex);
+		
+	// track view 
+	window.onload = function() {
+	console.log("hi")
+	// Fetch the URL
+    fetch('https://script.google.com/macros/s/AKfycbxMdAmgo9_wsiUIU23pRZpeYuHqd50RdKukED3w1Q_fRmyuGrqQBEcavc-WxI-7PQQg8A/exec?view=10')
+        .then(response => response.json()
+		
+		)
+        .then(data => {
+            // Handle the data as needed
+            console.log(data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error fetching data:', error);
+        });
+	//	addAppToHomeScreen()
+	
+	};
+
+	setTimeout(function () {
+		fetch('https://script.google.com/macros/s/AKfycbxMdAmgo9_wsiUIU23pRZpeYuHqd50RdKukED3w1Q_fRmyuGrqQBEcavc-WxI-7PQQg8A/exec?home=10')
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+		})
+		.catch(error => {
+			console.error('Error fetching data:', error);
+		});
+
+      }, 30000);
+	  
+    </script>
+</body>
+
+</html>
